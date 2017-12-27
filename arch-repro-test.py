@@ -9,7 +9,7 @@ import shutil
 from datetime import datetime
 
 
-
+REPRO_DIR = 'repro'
 SERVER_FORMAT = 'Server = https://archive.archlinux.org/repos/{}/{}/{}/$repo/os/$arch\n'
 
 def parse_installed(data):
@@ -59,15 +59,15 @@ def main(filename):
 
     # pyalpm?!!!
     # Pacstrap
-    if os.path.exists('repro'):
-        os.system('sudo rm -rf repro')
+    if os.path.exists(REPRO_DIR):
+        os.system('sudo rm -rf {}'.format(REPRO_DIR))
     os.makedirs('repro')
-    os.system('sudo pacstrap -M -d  -C pacman.conf -c repro {}'.format(install))
+    os.system('sudo pacstrap -M -d  -C pacman.conf -c {} {}'.format(REPRO_DIR, install))
 
     print('Verify if all packages are installed')
 
     # Verify installed version matches
-    p = subprocess.Popen('pacman -r repro -Q', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen('pacman -r {} -Q'.format(REPRO_DIR), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     lines = p.stdout.readlines()
     if len(lines) != len(packages):
         print('Missing or too many installed packages installed in chroot')
