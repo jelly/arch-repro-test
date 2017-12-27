@@ -4,7 +4,6 @@ import tarfile
 import os
 import subprocess
 import sys
-import shutil
 
 from datetime import datetime
 
