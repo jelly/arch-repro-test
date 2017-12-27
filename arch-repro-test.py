@@ -12,6 +12,7 @@ from datetime import datetime
 REPRO_DIR = 'repro'
 SERVER_FORMAT = 'Server = https://archive.archlinux.org/repos/{}/{}/{}/$repo/os/$arch\n'
 
+
 def parse_installed(data):
     data = data.decode('utf-8')
     packages = []
