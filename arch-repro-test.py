@@ -62,6 +62,7 @@ def main(filename):
     if os.path.exists(REPRO_DIR):
         os.system('sudo rm -rf {}'.format(REPRO_DIR))
     os.makedirs('repro')
+    print('Install build chroot')
     os.system('sudo pacstrap -M -d  -C pacman.conf -c {} {}'.format(REPRO_DIR, install))
 
     print('Verify if all packages are installed')
