@@ -61,8 +61,15 @@ def main(filename):
     # Pacstrap
     if os.path.exists(REPRO_DIR):
         os.system('sudo rm -rf {}'.format(REPRO_DIR))
-    os.makedirs('repro')
+    os.makedirs(REPRO_DIR)
+
+    # Download packages in parallel
+    # Fetch them in parallel https://wiki.archlinux.org/index.php/Arch_Linux_Archive#.2Fpackages
     print('Install build chroot')
+    # mkdir -m 0755 -p "$newroot"/var/{cache/pacman/pkg,lib/pacman,log} "$newroot"/{dev,run,etc}
+    # mkdir -m 1777 -p "$newroot"/tmp
+    # mkdir -m 0555 -p "$newroot"/{sys,proc}
+
     os.system('sudo pacstrap -M -d  -C pacman.conf -c {} {}'.format(REPRO_DIR, install))
 
     print('Verify if all packages are installed')
