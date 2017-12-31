@@ -21,6 +21,13 @@ def parse_installed(data):
             packages.append(pkg)
     return packages
 
+def extract_pkgbuild_hash(data):
+    data = data.decode('utf-8')
+    packages = []
+    for line in data.split('\n'):
+        if line.startswith('pkgbuild_sha256sum')
+            return line.splt(' = ')[1].strip()
+
 
 def extract_builddate(data):
     for line in data.split(b'\n'):
@@ -51,7 +58,13 @@ def main(filename):
         print('No .BUILDINFO found in {}'.format(filename))
 
     # Parse buldinfo
-    packages = parse_installed(buildinfo)
+    #packages = parse_installed(buildinfo)
+    #pkgbuild_sha256sum = extract_pkgbuild_hash(buildinfo)
+
+    #pkgname = ''.join(filename.split('-')[:-3])
+    #os.system('asp -a x86_64 checkout {}'.format(pkgname))
+    #x = "curl/repos/core-x86_64/PKGBUILD'
+    
     #print(packages)
     # Handle stripping pkgver-pkgrel
     pkgnames = ['-'.join(pkg.split('-')[:-2]) for pkg in packages]
@@ -66,16 +79,13 @@ def main(filename):
     # Download packages in parallel
     # Fetch them in parallel https://wiki.archlinux.org/index.php/Arch_Linux_Archive#.2Fpackages
     print('Install build chroot')
-    # mkdir -m 0755 -p "$newroot"/var/{cache/pacman/pkg,lib/pacman,log} "$newroot"/{dev,run,etc}
-    # mkdir -m 1777 -p "$newroot"/tmp
-    # mkdir -m 0555 -p "$newroot"/{sys,proc}
 
-    os.system('sudo pacstrap -M -d  -C pacman.conf -c {} {}'.format(REPRO_DIR, install))
+    os.system('sudo mkarchroot -C pacman.conf {}/root {}'.format(REPRO_DIR, install))
 
     print('Verify if all packages are installed')
 
     # Verify installed version matches
-    p = subprocess.Popen('pacman -r {} -Q'.format(REPRO_DIR), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen('pacman -r {}/root -Q'.format(REPRO_DIR), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     lines = p.stdout.readlines()
     if len(lines) != len(packages):
         print('Missing or too many installed packages installed in chroot')
